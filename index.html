@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <a-scene mindar-image="imageTargetSrc: data/target2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline style="display:none">
+            <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+        </video>
+        <video id="video2" loop crossOrigin="anonymous" webkit-playsinline playsinline style="display:none">
+            <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+        </video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="target1" mindar-image-target="targetIndex: 0">
+        <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
+        </a-plane>
+        <a-video src="#video1" width="1" height="0.552" position="0 0 0" rotation="0 0 0"></a-video>
+      </a-entity>
+      <a-entity id="target2" mindar-image-target="targetIndex: 1">
+        <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
+        </a-plane>
+        <a-video src="#video2" width="1" height="0.552" position="0 0 0" rotation="0 0 0"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <!-- Play Button -->
+    <button  id="playButton" style="position: absolute; top: 10px; left: 10px;">playy</button>
+
+    <script>
+      const video1 = document.getElementById('video1');
+      const target1 = document.getElementById('target1');
+      const video2 = document.getElementById('video2');
+      const target2 = document.getElementById('target2');
+
+      const playButton = document.getElementById('playButton');
+
+     
+      
+         
+      target1.addEventListener("targetFound", event => {
+        console.log("Target found");
+        video1.play();
+        playButton.addEventListener('click', function() {
+        
+        video1.play();
+        console.log("Play");
+         playButton.style.display = 'none';
+      
+    });
+    playButton.click();
+      });
+
+      target1.addEventListener("targetLost", event => {
+        console.log("Target lost");
+        video1.pause();
+      });
+      target2.addEventListener("targetFound", event => {
+        console.log("Target found");
+        video2.play();
+        playButton.addEventListener('click', function() {
+        
+       
+        video2.play();
+        console.log("Play");
+         playButton.style.display = 'none';
+      
+    });
+    playButton.click();
+      });
+
+      target2.addEventListener("targetLost", event => {
+        console.log("Target lost");
+        video2.pause();
+      });
+    </script>
+  </body>
+</html>
