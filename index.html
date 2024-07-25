@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -58,10 +59,8 @@
       }
       .allow-button {
         background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
-   
         border-bottom-right-radius: 12px; /* Rounded corners for first button */
         font-weight: 700;
-       
       }
       .allow-button:hover ,.cancel-button:hover {
         background-color: rgba(221, 221, 221, 0.7); /* Slightly lighter on hover */
@@ -72,7 +71,6 @@
         border-right: #c0c0c0 solid 1px;
         border-bottom-left-radius: 12px; /* Rounded corners for second button */
       }
-     
     </style>
   </head>
   <body>
@@ -130,6 +128,7 @@
         // Display the modal once on page load
         $(window).on('load', function() {
           showUnmuteModal();
+          requestFullscreen(); // Request full screen
         });
 
         // When the user clicks the Allow button
@@ -171,6 +170,18 @@
           console.log("Target 2 lost");
           video2.pause();
         });
+
+        function requestFullscreen() {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+          } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+            document.documentElement.mozRequestFullScreen();
+          } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            document.documentElement.webkitRequestFullscreen();
+          } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+            document.documentElement.msRequestFullscreen();
+          }
+        }
       });
     </script>
   </body>
