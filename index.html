@@ -3,6 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <a-scene mindar-image="imageTargetSrc: data/target2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -30,7 +31,7 @@
     </a-scene>
 
     <!-- Play Button -->
-    <button  id="playButton" style="position: absolute; top: 10px; left: 10px;">playy</button>
+    <button id="playButton" style="position: absolute; top: 10px; left: 10px;">playy</button>
 
     <script>
       const video1 = document.getElementById('video1');
@@ -40,42 +41,31 @@
 
       const playButton = document.getElementById('playButton');
 
-     
-      
-         
       target1.addEventListener("targetFound", event => {
         console.log("Target found");
         video1.play();
-        playButton.addEventListener('click', function() {
-        
-        video1.play();
-        console.log("Play");
-         playButton.style.display = 'none';
-      
-    });
-    setTimeout(() => {
-                playButton.click();
-            }, 1000);
+        $('#playButton').click(function() {
+          video1.play();
+          console.log("Play");
+          $('#playButton').hide();
+        });
+        $('#playButton').trigger('click');
       });
 
       target1.addEventListener("targetLost", event => {
         console.log("Target lost");
         video1.pause();
       });
+
       target2.addEventListener("targetFound", event => {
         console.log("Target found");
         video2.play();
-        playButton.addEventListener('click', function() {
-        
-       
-        video2.play();
-        console.log("Play");
-         playButton.style.display = 'none';
-      
-    });
-     setTimeout(() => {
-                playButton.click();
-            }, 1000);
+        $('#playButton').click(function() {
+          video2.play();
+          console.log("Play");
+          $('#playButton').hide();
+        });
+        $('#playButton').trigger('click');
       });
 
       target2.addEventListener("targetLost", event => {
