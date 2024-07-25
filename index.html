@@ -43,19 +43,20 @@
         const playButton = $('#playButton');
 
         playButton.click(function() {
-            video1.play();
-            video2.play();
           video1.muted = false;
           video2.muted = false;
           playButton.hide();
-          
-
         });
+
+        function playVideo(video) {
+          video.play().catch(error => {
+            console.log('Play was prevented:', error);
+          });
+        }
 
         target1.addEventListener("targetFound", event => {
           console.log("Target 1 found");
-          video1.play();
-          playButton.trigger('click');
+          playVideo(video1);
         });
 
         target1.addEventListener("targetLost", event => {
@@ -65,8 +66,7 @@
 
         target2.addEventListener("targetFound", event => {
           console.log("Target 2 found");
-          video2.play();
-          playButton.trigger('click');
+          playVideo(video2);
         });
 
         target2.addEventListener("targetLost", event => {
