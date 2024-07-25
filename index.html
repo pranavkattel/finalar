@@ -43,9 +43,13 @@
         const playButton = $('#playButton');
 
         playButton.click(function() {
+            video1.play();
+            video2.play();
           video1.muted = false;
           video2.muted = false;
           playButton.hide();
+          
+
         });
 
         target1.addEventListener("targetFound", event => {
