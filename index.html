@@ -1,188 +1,199 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-      /* Modal styles */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .modal-content {
-        background-color: rgba(50, 50, 50, 0.9); /* Darker grey with transparency */
-        border-radius: 12px; /* Rounded corners */
-        padding: 20px;
-        padding-bottom: 0;
-        padding-left: 0;
-        padding-right: 0;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        width: 90%; /* Adjust width */
-        max-width: 240px; /* Compact width */
-        text-align: center;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-size: 16px;
-      }
-      .modal-content p {
-        margin: 0;
-        font-size: 16px;
-        color: #fff; /* White text color */
-        line-height: 1.4; /* Space between lines */
-      }
-      .modal-buttons {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        border-top: 1px solid #c7c7c7; /* White border on top */
-      }
-      .modal-button {
-        padding: 12px 0;
-        font-size: 16px;
-        cursor: pointer;
-        border: none;
-        border-radius: 0; /* No border radius */
-        transition: background-color 0.2s, color 0.2s;
-        color: #007aff; /* Blue text color */
-        width: 50%; /* Each button takes half width */
-        box-sizing: border-box;
-      }
-      .allow-button {
-        background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
-        border-bottom-right-radius: 12px; /* Rounded corners for first button */
-        font-weight: 700;
-      }
-      .allow-button:hover ,.cancel-button:hover {
-        background-color: rgba(221, 221, 221, 0.7); /* Slightly lighter on hover */
-      }
-      .cancel-button {
-        font-weight: 700;
-        background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
-        border-right: #c0c0c0 solid 1px;
-        border-bottom-left-radius: 12px; /* Rounded corners for second button */
-      }
-    </style>
-  </head>
-  <body>
-    <a-scene mindar-image="imageTargetSrc: data/target2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      <a-assets>
-        <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
-            <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-        </video>
-        <video id="video2" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
-            <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-        </video>
-      </a-assets>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: rgba(50, 50, 50, 0.9); /* Darker grey with transparency */
+      border-radius: 12px; /* Rounded corners */
+      padding: 20px;
+      padding-bottom: 0;
+      padding-left: 0;
+      padding-right: 0;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      width: 90%; /* Adjust width */
+      max-width: 260px; /* Compact width */
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+    }
+    .modal-content p {
+      margin: 0;
+      font-size: 16px;
+      color: #fff; /* White text color */
+      line-height: 1.4; /* Space between lines */
+    }
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid #c7c7c7; /* White border on top */
+    }
+    .modal-button {
+      padding: 12px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 0; /* No border radius */
+      transition: background-color 0.2s, color 0.2s;
+      color: #007aff; /* Blue text color */
+      width: 50%; /* Each button takes half width */
+      box-sizing: border-box;
+    }
+    .allow-button {
+      background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
+      border-bottom-right-radius: 12px; /* Rounded corners for first button */
+      font-weight: 700;
+    }
+    .allow-button:hover ,.cancel-button:hover {
+      background-color: rgba(221, 221, 221, 0.7); /* Slightly lighter on hover */
+    }
+    .cancel-button {
+      font-weight: 700;
+      background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
+      border-right: #c0c0c0 solid 1px;
+      border-bottom-left-radius: 12px; /* Rounded corners for second button */
+    }
+  </style>
+</head>
+<body>
+  <a-scene mindar-image="imageTargetSrc: data/target2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-assets>
+      <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
+          <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+      </video>
+      <video id="video2" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
+          <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+      </video>
+    </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity id="target1" mindar-image-target="targetIndex: 0">
-        <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
-        </a-plane>
-        <a-video src="#video1" width="1" height="0.552" position="0 0 0" rotation="0 0 0"></a-video>
-      </a-entity>
-      <a-entity id="target2" mindar-image-target="targetIndex: 1">
-        <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
-        </a-plane>
-        <a-video src="#video2" width="1" height="0.552" position="0 0 0" rotation="0 0 0"></a-video>
-      </a-entity>
-    </a-scene>
+    <a-entity id="target1" mindar-image-target="targetIndex: 0">
+      <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
+      </a-plane>
+      <a-video src="#video1" width="1" height="0.552" position="0 0 0" rotation="0 0 0"></a-video>
+    </a-entity>
+    <a-entity id="target2" mindar-image-target="targetIndex: 1">
+      <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
+      </a-plane>
+      <a-video src="#video2" width="1" height="0.552" position="0 0 0" rotation="0 0 0"></a-video>
+    </a-entity>
+  </a-scene>
 
-    <!-- Unmute Modal -->
-    <div id="unmuteModal" class="modal">
-      <div class="modal-content">
-        <p>Allow this site to play<br>  videos with sound?</p>
-        <div class="modal-buttons">
-          <button id="cancelButton" class="modal-button cancel-button">Cancel</button>
-          <button id="allowButton" class="modal-button allow-button">Allow</button>
-        </div>
+  <!-- Unmute Modal -->
+  <div id="unmuteModal" class="modal">
+    <div class="modal-content">
+      <p>Allow this site to play<br>videos with sound?</p>
+      <div class="modal-buttons">
+        <button id="cancelButton" class="modal-button cancel-button">Cancel</button>
+        <button id="allowButton" class="modal-button allow-button">Allow</button>
       </div>
     </div>
+  </div>
 
-    <script>
-      $(document).ready(function() {
-        const video1 = document.getElementById('video1');
-        const video2 = document.getElementById('video2');
-        const allowButton = $('#allowButton');
-        const cancelButton = $('#cancelButton');
-        const unmuteModal = $('#unmuteModal');
-        let modalShown = false;
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const video1 = document.getElementById('video1');
+      const video2 = document.getElementById('video2');
+      const allowButton = document.getElementById('allowButton');
+      const cancelButton = document.getElementById('cancelButton');
+      const unmuteModal = document.getElementById('unmuteModal');
 
-        function showUnmuteModal() {
-          if (!modalShown) {
-            unmuteModal.show();
-            modalShown = true;
-          }
-        }
+      function showUnmuteModal() {
+        unmuteModal.style.display = 'flex';
+      }
 
-        // Display the modal once on page load
-        $(window).on('load', function() {
-          showUnmuteModal();
-          requestFullscreen(); // Request full screen
-        });
-
-        // When the user clicks the Allow button
-        allowButton.click(function() {
-          video1.muted = false;
-          video2.muted = false;
-          unmuteModal.hide();
-        });
-
-        // When the user clicks the Cancel button
-        cancelButton.click(function() {
-          unmuteModal.hide();
-        });
-
-        // Check if the image is tracked
-        const target1 = document.getElementById('target1');
-        const target2 = document.getElementById('target2');
-
-        target1.addEventListener("targetFound", event => {
-          console.log("Target 1 found");
-          video1.play().catch(error => {
-            console.log('Play was prevented:', error);
+      function enterFullscreen() {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.error("Fullscreen request failed:", err);
           });
-        });
-
-        target1.addEventListener("targetLost", event => {
-          console.log("Target 1 lost");
-          video1.pause();
-        });
-
-        target2.addEventListener("targetFound", event => {
-          console.log("Target 2 found");
-          video2.play().catch(error => {
-            console.log('Play was prevented:', error);
+        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+          document.documentElement.mozRequestFullScreen().catch(err => {
+            console.error("Fullscreen request failed:", err);
           });
-        });
-
-        target2.addEventListener("targetLost", event => {
-          console.log("Target 2 lost");
-          video2.pause();
-        });
-
-        function requestFullscreen() {
-          if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-          } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-            document.documentElement.mozRequestFullScreen();
-          } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
-            document.documentElement.webkitRequestFullscreen();
-          } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-            document.documentElement.msRequestFullscreen();
-          }
+        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+          document.documentElement.webkitRequestFullscreen().catch(err => {
+            console.error("Fullscreen request failed:", err);
+          });
+        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+          document.documentElement.msRequestFullscreen().catch(err => {
+            console.error("Fullscreen request failed:", err);
+          });
         }
+      }
+
+      // Request fullscreen when the user clicks anywhere on the page
+      document.body.addEventListener('click', function() {
+        enterFullscreen();
+        document.body.removeEventListener('click', arguments.callee); // Remove the event listener after fullscreen is requested
       });
-    </script>
-  </body>
+
+      // Show the modal once the page has loaded
+      window.addEventListener('load', function() {
+        showUnmuteModal();
+      });
+
+      // When the user clicks the Allow button
+      allowButton.addEventListener('click', function() {
+        unmuteModal.style.display = 'none';
+        video1.muted = false;
+        video2.muted = false;
+      });
+
+      // When the user clicks the Cancel button
+      cancelButton.addEventListener('click', function() {
+        unmuteModal.style.display = 'none';
+        video1.muted = true;
+        video2.muted = true;
+      });
+
+      // Check if the image is tracked
+      const target1 = document.getElementById('target1');
+      const target2 = document.getElementById('target2');
+
+      target1.addEventListener("targetFound", function() {
+        console.log("Target 1 found");
+        video1.play().catch(error => {
+          console.log('Play was prevented:', error);
+        });
+      });
+
+      target1.addEventListener("targetLost", function() {
+        console.log("Target 1 lost");
+        video1.pause();
+      });
+
+      target2.addEventListener("targetFound", function() {
+        console.log("Target 2 found");
+        video2.play().catch(error => {
+          console.log('Play was prevented:', error);
+        });
+      });
+
+      target2.addEventListener("targetLost", function() {
+        console.log("Target 2 lost");
+        video2.pause();
+      });
+    });
+  </script>
+</body>
 </html>
