@@ -8,10 +8,10 @@
   <body>
     <a-scene mindar-image="imageTargetSrc: data/target2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline style="display:none">
+        <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
             <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
         </video>
-        <video id="video2" loop crossOrigin="anonymous" webkit-playsinline playsinline style="display:none">
+        <video id="video2" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
             <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1721726816/0-02-03-e5537ca8456333c4a5c791ab80904d1bdb5cfa93fed47a68274f4b9d507240fc_879490454838e13_yzhmrs.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
         </video>
       </a-assets>
@@ -31,46 +31,44 @@
     </a-scene>
 
     <!-- Play Button -->
-    <button id="playButton" style="position: absolute; top: 10px; left: 10px;">playy</button>
+    <button id="playButton" style="position: absolute; top: 10px; left: 10px;">Play</button>
 
     <script>
-      const video1 = document.getElementById('video1');
-      const target1 = document.getElementById('target1');
-      const video2 = document.getElementById('video2');
-      const target2 = document.getElementById('target2');
+      $(document).ready(function() {
+        const video1 = document.getElementById('video1');
+        const target1 = document.getElementById('target1');
+        const video2 = document.getElementById('video2');
+        const target2 = document.getElementById('target2');
 
-      const playButton = document.getElementById('playButton');
+        const playButton = $('#playButton');
 
-      target1.addEventListener("targetFound", event => {
-        console.log("Target found");
-        video1.play();
-        $('#playButton').click(function() {
+        playButton.click(function() {
+          video1.muted = false;
+          video2.muted = false;
+          playButton.hide();
+        });
+
+        target1.addEventListener("targetFound", event => {
+          console.log("Target 1 found");
           video1.play();
-          console.log("Play");
-          $('#playButton').hide();
+          playButton.trigger('click');
         });
-        $('#playButton').trigger('click');
-      });
 
-      target1.addEventListener("targetLost", event => {
-        console.log("Target lost");
-        video1.pause();
-      });
+        target1.addEventListener("targetLost", event => {
+          console.log("Target 1 lost");
+          video1.pause();
+        });
 
-      target2.addEventListener("targetFound", event => {
-        console.log("Target found");
-        video2.play();
-        $('#playButton').click(function() {
+        target2.addEventListener("targetFound", event => {
+          console.log("Target 2 found");
           video2.play();
-          console.log("Play");
-          $('#playButton').hide();
+          playButton.trigger('click');
         });
-        $('#playButton').trigger('click');
-      });
 
-      target2.addEventListener("targetLost", event => {
-        console.log("Target lost");
-        video2.pause();
+        target2.addEventListener("targetLost", event => {
+          console.log("Target 2 lost");
+          video2.pause();
+        });
       });
     </script>
   </body>
