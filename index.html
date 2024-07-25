@@ -4,6 +4,41 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.8);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 300px;
+        text-align: center;
+      }
+      .modal-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+      }
+    </style>
   </head>
   <body>
     <a-scene mindar-image="imageTargetSrc: data/target2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -30,8 +65,13 @@
       </a-entity>
     </a-scene>
 
-    <!-- Play Button -->
-    <button id="playButton" style="position: absolute; top: 10px; left: 10px;">Play</button>
+    <!-- Unmute Modal -->
+    <div id="unmuteModal" class="modal">
+      <div class="modal-content">
+        <p>Allow this site to play videos with sound?</p>
+        <button id="unmuteButton" class="modal-button">Allow</button>
+      </div>
+    </div>
 
     <script>
       $(document).ready(function() {
@@ -39,14 +79,28 @@
         const target1 = document.getElementById('target1');
         const video2 = document.getElementById('video2');
         const target2 = document.getElementById('target2');
+        const unmuteButton = $('#unmuteButton');
+        const unmuteModal = $('#unmuteModal');
 
-        const playButton = $('#playButton');
+        let modalShown = false;  // Flag to show modal only once
 
-        playButton.click(function() {
+        // Show the unmute modal once at the beginning
+        function showUnmuteModalOnce() {
+          if (!modalShown) {
+            unmuteModal.show();
+            modalShown = true;
+          }
+        }
+
+        // When the user clicks the unmute button
+        unmuteButton.click(function() {
           video1.muted = false;
           video2.muted = false;
-          playButton.hide();
+          unmuteModal.hide();
         });
+
+        // Show the unmute modal at the beginning
+        showUnmuteModalOnce();
 
         function playVideo(video) {
           video.play().catch(error => {
@@ -57,9 +111,6 @@
         target1.addEventListener("targetFound", event => {
           console.log("Target 1 found");
           playVideo(video1);
-          $('#playButton').trigger('click');
-
-
         });
 
         target1.addEventListener("targetLost", event => {
@@ -70,8 +121,6 @@
         target2.addEventListener("targetFound", event => {
           console.log("Target 2 found");
           playVideo(video2);
-          $('#playButton').trigger('click');
-         
         });
 
         target2.addEventListener("targetLost", event => {
