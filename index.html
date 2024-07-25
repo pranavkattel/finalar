@@ -20,14 +20,15 @@
         align-items: center;
       }
       .modal-content {
-        background-color: rgba(0, 0, 0, 0.9); /* Darker grey with transparency */
+        background-color: rgba(50, 50, 50, 0.9); /* Darker grey with transparency */
         border-radius: 12px; /* Rounded corners */
         padding: 20px;
+        padding-bottom: 0;
         padding-left: 0;
         padding-right: 0;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
         width: 90%; /* Adjust width */
-        max-width: 280px; /* Compact width */
+        max-width: 200px; /* Compact width */
         text-align: center;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-size: 16px;
@@ -42,31 +43,36 @@
         margin-top: 20px;
         display: flex;
         justify-content: center;
-        gap: 10px; /* Space between buttons */
+        border-top: 1px solid #c7c7c7; /* White border on top */
       }
       .modal-button {
-        padding: 12px 20px;
+        padding: 12px 0;
         font-size: 16px;
         cursor: pointer;
         border: none;
-        border-radius: 8px; /* Rounded button */
-        transition: background-color 0.2s;
-        color: #fff; /* White text color */
-        width: 100px; /* Fixed width for buttons */
+        border-radius: 0; /* No border radius */
+        transition: background-color 0.2s, color 0.2s;
+        color: #007aff; /* Blue text color */
+        width: 50%; /* Each button takes half width */
+        box-sizing: border-box;
       }
       .allow-button {
-        background-color: #007aff; /* Blue button background */
+        background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
+   
+        border-bottom-right-radius: 12px; /* Rounded corners for first button */
+        font-weight: 700;
+       
       }
-      .allow-button:hover {
-        background-color: #0051a8; /* Darker blue on hover */
+      .allow-button:hover ,.cancel-button:hover {
+        background-color: rgba(221, 221, 221, 0.7); /* Slightly lighter on hover */
       }
       .cancel-button {
-        background-color: #f5f5f5; /* Light grey button background */
-        color: #000; /* Black text color */
+        font-weight: 700;
+        background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
+        border-right: #c0c0c0 solid 1px;
+        border-bottom-left-radius: 12px; /* Rounded corners for second button */
       }
-      .cancel-button:hover {
-        background-color: #e1e1e1; /* Slightly darker grey on hover */
-      }
+     
     </style>
   </head>
   <body>
@@ -97,10 +103,10 @@
     <!-- Unmute Modal -->
     <div id="unmuteModal" class="modal">
       <div class="modal-content">
-        <p>Allow this site to play videos<br>with sound?</p>
+        <p>Allow this site to play<br>  videos with sound?</p>
         <div class="modal-buttons">
-          <button id="allowButton" class="modal-button allow-button">Allow</button>
           <button id="cancelButton" class="modal-button cancel-button">Cancel</button>
+          <button id="allowButton" class="modal-button allow-button">Allow</button>
         </div>
       </div>
     </div>
