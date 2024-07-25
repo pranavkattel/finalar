@@ -57,9 +57,8 @@
         target1.addEventListener("targetFound", event => {
           console.log("Target 1 found");
           playVideo(video1);
-          setTimeout(() => {
-            video1.muted = false;
-          }, 1000);
+          $('#playButton').trigger('click');
+
 
         });
 
@@ -71,9 +70,8 @@
         target2.addEventListener("targetFound", event => {
           console.log("Target 2 found");
           playVideo(video2);
-          setTimeout(() => {
-            video2.muted = false;
-          }, 1000);
+          $('#playButton').trigger('click');
+         
         });
 
         target2.addEventListener("targetLost", event => {
