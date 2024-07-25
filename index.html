@@ -20,12 +20,14 @@
         align-items: center;
       }
       .modal-content {
-        background-color: rgba(50, 50, 50, 0.9); /* Darker grey with transparency */
+        background-color: rgba(0, 0, 0, 0.9); /* Darker grey with transparency */
         border-radius: 12px; /* Rounded corners */
         padding: 20px;
+        padding-left: 0;
+        padding-right: 0;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        width: 90%;
-        max-width: 330px; /* Compact width */
+        width: 90%; /* Adjust width */
+        max-width: 280px; /* Compact width */
         text-align: center;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-size: 16px;
@@ -33,21 +35,37 @@
       .modal-content p {
         margin: 0;
         font-size: 16px;
-        color: #ccc; /* Light grey text color */
+        color: #fff; /* White text color */
+        line-height: 1.4; /* Space between lines */
+      }
+      .modal-buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px; /* Space between buttons */
       }
       .modal-button {
-        margin-top: 20px;
         padding: 12px 20px;
         font-size: 16px;
         cursor: pointer;
         border: none;
-        background-color: #666; /* Darker grey button background */
-        color: #fff; /* White text color */
         border-radius: 8px; /* Rounded button */
         transition: background-color 0.2s;
+        color: #fff; /* White text color */
+        width: 100px; /* Fixed width for buttons */
       }
-      .modal-button:hover {
-        background-color: #555; /* Slightly darker grey on hover */
+      .allow-button {
+        background-color: #007aff; /* Blue button background */
+      }
+      .allow-button:hover {
+        background-color: #0051a8; /* Darker blue on hover */
+      }
+      .cancel-button {
+        background-color: #f5f5f5; /* Light grey button background */
+        color: #000; /* Black text color */
+      }
+      .cancel-button:hover {
+        background-color: #e1e1e1; /* Slightly darker grey on hover */
       }
     </style>
   </head>
@@ -79,8 +97,11 @@
     <!-- Unmute Modal -->
     <div id="unmuteModal" class="modal">
       <div class="modal-content">
-        <p>Allow this site to play videos with sound?</p>
-        <button id="unmuteButton" class="modal-button">Allow</button>
+        <p>Allow this site to play videos<br>with sound?</p>
+        <div class="modal-buttons">
+          <button id="allowButton" class="modal-button allow-button">Allow</button>
+          <button id="cancelButton" class="modal-button cancel-button">Cancel</button>
+        </div>
       </div>
     </div>
 
@@ -88,7 +109,8 @@
       $(document).ready(function() {
         const video1 = document.getElementById('video1');
         const video2 = document.getElementById('video2');
-        const unmuteButton = $('#unmuteButton');
+        const allowButton = $('#allowButton');
+        const cancelButton = $('#cancelButton');
         const unmuteModal = $('#unmuteModal');
         let modalShown = false;
 
@@ -104,10 +126,15 @@
           showUnmuteModal();
         });
 
-        // When the user clicks the unmute button
-        unmuteButton.click(function() {
+        // When the user clicks the Allow button
+        allowButton.click(function() {
           video1.muted = false;
           video2.muted = false;
+          unmuteModal.hide();
+        });
+
+        // When the user clicks the Cancel button
+        cancelButton.click(function() {
           unmuteModal.hide();
         });
 
