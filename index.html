@@ -79,13 +79,20 @@
       <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
           <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1726454808/MST_Video_Final_2_0_2_ptpgdw.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
       </video>
+      <a-asset-item id="bearModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/bear/scene.gltf"></a-asset-item>
+      <a-asset-item id="raccoonModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity id="target1" mindar-image-target="targetIndex: 0">
-      <a-plane color="black" opacity="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0">
-      </a-plane>
+      <a-gltf-model
+          rotation="0 0 0"
+          position="0 0 0.2"
+          scale="0.04 0.04 0.04"
+          src="#raccoonModel"
+          animation-mixer>
+        </a-gltf-model>
       <a-video src="#video1" width="1.85" height="1.04" position="0 0 0.1" rotation="0 0 0"></a-video>
     </a-entity>
   </a-scene>
