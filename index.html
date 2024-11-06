@@ -206,14 +206,12 @@
 
       target2.addEventListener("targetFound", function() {
         console.log("Target 2 found");
-        video2.play().catch(error => {
-          console.log('Play was prevented:', error);
-        });
+        
       });
 
       target2.addEventListener("targetLost", function() {
         console.log("Target 2 lost");
-        video2.pause();
+        
       });
 
     });
