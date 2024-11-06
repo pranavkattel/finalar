@@ -65,7 +65,7 @@
       font-weight: 700;
     }
     .allow-button:hover ,.cancel-button:hover {
-      background-color: rgba(221, 221, 221, 0.7); /* Slightly lighter on hover */
+      background-color: rgba(221, 221, 0, 0.7); /* Slightly lighter on hover */
     }
     .cancel-button {
       font-weight: 700;
@@ -82,20 +82,21 @@
           <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1726454808/MST_Video_Final_2_0_2_ptpgdw.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
       </video>
       <a-asset-item id="bearModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/bear/scene.gltf"></a-asset-item>
-      <a-asset-item id="raccoonModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
+      <a-asset-item id="raccoonModel" src="Helicopter/Helicopter.gltf"></a-asset-item>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity id="target1" mindar-image-target="targetIndex: 0">
+      <a-video id="videoElement" src="#video1" width="1" height="0.7" position="0 0 0.1" rotation="0 0 0"></a-video>
       <a-gltf-model
-          rotation="0 0 0"
-          position="0 0 0.2"
-          scale="0.04 0.04 0.04"
-          src="#raccoonModel"
-          animation-mixer>
-        </a-gltf-model>
-      <a-video src="#video1" width="1.85" height="1.04" position="0 0 0.1" rotation="0 0 0"></a-video>
+        id="raccoonModelElement"
+        rotation="0 -90 0"
+        position="0 -0.4 0.2"
+        scale="0.3 0.3 0.3"
+        src="#raccoonModel"
+        animation-mixer="clip: *;loop:once; timeScale: 0; clampWhenFinished: true">
+      </a-gltf-model>
     </a-entity>
   </a-scene>
 
@@ -116,6 +117,7 @@
       const allowButton = document.getElementById('allowButton');
       const cancelButton = document.getElementById('cancelButton');
       const unmuteModal = document.getElementById('unmuteModal');
+      const raccoonModel = document.getElementById('raccoonModelElement');
 
       function showUnmuteModal() {
         unmuteModal.style.display = 'flex';
@@ -172,11 +174,15 @@
         video1.play().catch(error => {
           console.log('Play was prevented:', error);
         });
+        // Start the animation once the target is found
+        raccoonModel.setAttribute('animation-mixer', 'timeScale: 1');
       });
 
       target1.addEventListener("targetLost", function() {
         console.log("Target 1 lost");
         video1.pause();
+        // Stop the animation once the target is lost
+        raccoonModel.setAttribute('animation-mixer', 'timeScale: 0');
       });
 
     });
