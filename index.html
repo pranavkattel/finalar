@@ -18,7 +18,7 @@
       <button id="okey">Click</button>
     </div>
 
-    <a-scene mindar-image="imageTargetSrc: data/hck.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: data/hck.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
         <a-asset-item id="bearModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/bear/scene.gltf"></a-asset-item>
         <a-asset-item id="raccoonModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
@@ -68,13 +68,11 @@
         video1.play().catch(error => {
             console.log('Play was prevented:', error);
         });
-        video1.muted = false;
         });
 
         target1.addEventListener("targetLost", function() {
         console.log("Target 1 lost");
         video1.pause();
-        video1.muted = true;
         });
     </script>
   </body>
