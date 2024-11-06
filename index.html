@@ -84,6 +84,7 @@
       <video id="video2" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
           <source src="https://res.cloudinary.com/dwzhyrwcu/video/upload/v1726454808/MST_Video_Final_2_0_2_ptpgdw.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
       </video>
+       <a-asset-item id="saturnModel" src="Saturn/Planet.gltf"></a-asset-item>
       <a-asset-item id="bearModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/bear/scene.gltf"></a-asset-item>
       <a-asset-item id="raccoonModel" src="Helicopter/Helicopter.gltf"></a-asset-item>
     </a-assets>
@@ -102,7 +103,14 @@
       </a-gltf-model>
     </a-entity>
     <a-entity id="target2" mindar-image-target="targetIndex: 1">
-      <a-video id="videoElement" src="#video2" width="1" height="0.7" position="0 0 0.1" rotation="0 0 0"></a-video>
+      <a-gltf-model
+        id="saturnModelElement"
+        rotation="90 0 0"
+        position="0 0 0"
+        scale="0.03 0.03 0.03"
+        src="#saturnModel"
+        animation-mixer="clip: *; timeScale: 1;">
+      </a-gltf-model>
     </a-entity>
   </a-scene>
 
