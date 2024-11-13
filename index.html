@@ -82,7 +82,7 @@
   <a-scene mindar-image="imageTargetSrc: data/skills.mind;" color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; antialias: false; logarithmicDepthBuffer: true; clearColor: #000000" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
     <a-assets>
-        <img id="banana" src="Skill-and-Knowledge.gif">
+        <img id="banana" src="Skill-and-Knowledge-2.gif">
       <!-- <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
           <source src="video/test.mov" type='video/quicktime;'>
       </video>
@@ -92,7 +92,7 @@
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity id="target1" mindar-image-target="targetIndex: 0">
-      <a-entity geometry="primitive:plane;width:2;height:2;" position="0 0 0" material="src:#banana;alphaTest: 0.1; transparent: true; opacity: 1;"></a-entity>
+      <a-entity geometry="primitive:plane;width:2;height:2;" position="0 0 0" material="shader:gif;src:#banana;alphaTest: 0.1; transparent: true; opacity: 1;"></a-entity>
     </a-entity>
 
   </a-scene>
