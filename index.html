@@ -1,74 +1,121 @@
-<html>
-  <head>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  </head>
-  <body>
-    <button id="switchCamera" style="position: absolute; top: 10px; left: 10px; z-index: 1000;">Switch Camera</button>
-
-    <div id="ar-container">
-      <a-scene id="scene" mindar-image="imageTargetSrc: data/target2.mind; videoDeviceId: " color-space="sRGB" renderer="colorManagement: true, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-        <a-camera position="0 1.6 0" look-controls></a-camera>
-      </a-scene>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera Switcher</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        #videoElement {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #controls {
+            margin-top: 20px;
+        }
+        button {
+            margin: 0 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Switcher</h1>
+    <video id="videoElement" autoplay playsinline></video>
+    <div id="controls">
+        <button id="startCamera">Start Camera</button>
+        <button id="switchCamera" disabled>Switch Camera</button>
+        <button id="stopCamera" disabled>Stop Camera</button>
     </div>
+    <p id="deviceCount"></p>
 
     <script>
-      let currentCameraIndex = 0;
-      let cameras = [];
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('videoElement');
+        const startBtn = document.getElementById('startCamera');
+        const switchBtn = document.getElementById('switchCamera');
+        const stopBtn = document.getElementById('stopCamera');
+        const deviceCountEl = document.getElementById('deviceCount');
 
-      async function getCameras() {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        cameras = devices.filter(device => device.kind === "videoinput");
+        let devices = [];
+        let currentDeviceIndex = 0;
+        let currentStream = null;
 
-        // Log camera list in console
-        console.log("Available Cameras:");
-        cameras.forEach((camera, index) => {
-          console.log(`[${index}] ${camera.label || "Unknown Camera"} - ${camera.deviceId}`);
-        });
-
-        if (cameras.length > 0) {
-          console.log(`Current Camera: ${cameras[currentCameraIndex].label}`);
+        // Fetch available camera devices
+        async function fetchDevices() {
+            try {
+                devices = (await navigator.mediaDevices.enumerateDevices())
+                    .filter(device => device.kind === 'videoinput');
+                
+                deviceCountEl.textContent = `Available Cameras: ${devices.length}`;
+                switchBtn.disabled = devices.length <= 1;
+            } catch (error) {
+                console.error('Error fetching devices:', error);
+            }
         }
-      }
 
-      async function switchCamera() {
-        if (cameras.length < 2) {
-          alert("No multiple cameras found!");
-          return;
+        // Start camera stream
+        async function startCamera(deviceId = null) {
+            try {
+                const constraints = {
+                    video: deviceId ? { deviceId: { exact: deviceId } } : true
+                };
+
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = currentStream;
+
+                startBtn.disabled = true;
+                switchBtn.disabled = devices.length <= 1;
+                stopBtn.disabled = false;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Could not access camera. Please check permissions.');
+            }
         }
 
-        currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
-        const newCameraId = cameras[currentCameraIndex].deviceId;
+        // Switch camera
+        function switchCamera() {
+            if (devices.length <= 1) return;
 
-        console.log(`Switching to Camera [${currentCameraIndex}]: ${cameras[currentCameraIndex].label}`);
+            currentDeviceIndex = (currentDeviceIndex + 1) % devices.length;
+            const nextDeviceId = devices[currentDeviceIndex].deviceId;
 
-        // Destroy the existing MindAR scene
-        const oldScene = document.querySelector("#scene");
-        oldScene.parentNode.removeChild(oldScene);
+            // Stop current stream
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
 
-        // Create a new MindAR scene with the new camera
-        const arContainer = document.querySelector("#ar-container");
-        const newScene = document.createElement("a-scene");
-        newScene.setAttribute("id", "scene");
-        newScene.setAttribute("mindar-image", `imageTargetSrc: data/target2.mind; videoDeviceId: ${newCameraId}`);
-        newScene.setAttribute("color-space", "sRGB");
-        newScene.setAttribute("renderer", "colorManagement: true, antialias: false, logarithmicDepthBuffer: true");
-        newScene.setAttribute("vr-mode-ui", "enabled: false");
-        newScene.setAttribute("device-orientation-permission-ui", "enabled: false");
+            // Start new stream with next device
+            startCamera(nextDeviceId);
+        }
 
-        const camera = document.createElement("a-camera");
-        camera.setAttribute("position", "0 1.6 0");
-        camera.setAttribute("look-controls", "");
+        // Stop camera stream
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                
+                startBtn.disabled = false;
+                switchBtn.disabled = true;
+                stopBtn.disabled = true;
+            }
+        }
 
-        newScene.appendChild(camera);
-        arContainer.appendChild(newScene);
-      }
+        // Event listeners
+        startBtn.addEventListener('click', () => startCamera());
+        switchBtn.addEventListener('click', switchCamera);
+        stopBtn.addEventListener('click', stopCamera);
 
-      document.getElementById("switchCamera").addEventListener("click", switchCamera);
-
-      getCameras();
+        // Initial device fetch
+        fetchDevices();
+    });
     </script>
-  </body>
+</body>
 </html>
