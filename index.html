@@ -1,186 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script> -->
-  <script src="js/aframe-gif-shader.min.js"></script>
-  <style>
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background-color: rgba(50, 50, 50, 0.9); /* Darker grey with transparency */
-      border-radius: 12px; /* Rounded corners */
-      padding: 20px;
-      padding-bottom: 0;
-      padding-left: 0;
-      padding-right: 0;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-      width: 90%; /* Adjust width */
-      max-width: 260px; /* Compact width */
-      text-align: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      font-size: 16px;
-    }
-    .modal-content p {
-      margin: 0;
-      font-size: 16px;
-      color: #fff; /* White text color */
-      line-height: 1.4; /* Space between lines */
-    }
-    .modal-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      border-top: 1px solid #c7c7c7; /* White border on top */
-    }
-    .modal-button {
-      padding: 12px 0;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 0; /* No border radius */
-      transition: background-color 0.2s, color 0.2s;
-      color: #007aff; /* Blue text color */
-      width: 50%; /* Each button takes half width */
-      box-sizing: border-box;
-    }
-    .allow-button {
-      background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
-      border-bottom-right-radius: 12px; /* Rounded corners for first button */
-      font-weight: 700;
-    }
-    .allow-button:hover ,.cancel-button:hover {
-      background-color: rgba(221, 221, 221, 0.7); /* Slightly lighter on hover */
-    }
-    .cancel-button {
-      font-weight: 700;
-      background-color: rgba(50, 50, 50, 0.9); /* Same as modal background */
-      border-right: #c0c0c0 solid 1px;
-      border-bottom-left-radius: 12px; /* Rounded corners for second button */
-    }
-    /* Optional styling for your scene */
-    a-scene { height: 100vh; }
-  </style>
-</head>
-<body>
-  <a-scene mindar-image="imageTargetSrc: data/skills.mind;" color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; antialias: false; logarithmicDepthBuffer: true; clearColor: #000000" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+<html>
+  <head>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <button id="switchCamera" style="position: absolute; top: 10px; left: 10px; z-index: 1000;">Switch Camera</button>
 
-    <a-assets>
-        <img id="banana" src="Skill-and-Knowledge-2.gif">
-      <!-- <video id="video1" loop crossOrigin="anonymous" webkit-playsinline playsinline muted style="display:none">
-          <source src="video/test.mov" type='video/quicktime;'>
-      </video>
-      <img id="targetImage" src="image/SEP-PNG.png" /> -->
-    </a-assets>
-
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-    <a-entity id="target1" mindar-image-target="targetIndex: 0">
-      <a-entity geometry="primitive:plane;width:2;height:2;" position="0 0 0" material="shader:gif;src:#banana;alphaTest: 0.1; transparent: true; opacity: 1;"></a-entity>
-    </a-entity>
-
-  </a-scene>
-
-  <!-- Unmute Modal -->
-  <div id="unmuteModal" class="modal">
-    <div class="modal-content">
-      <p>Allow this site to play<br>videos with sound?</p>
-      <div class="modal-buttons">
-        <button id="cancelButton" class="modal-button cancel-button">Cancel</button>
-        <button id="allowButton" class="modal-button allow-button">Allow</button>
-      </div>
+    <div id="ar-container">
+      <a-scene id="scene" mindar-image="imageTargetSrc: data/target2.mind; videoDeviceId: " color-space="sRGB" renderer="colorManagement: true, antialias: false, logarithmicDepthBuffer: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        <a-camera position="0 1.6 0" look-controls></a-camera>
+      </a-scene>
     </div>
-  </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const video1 = document.getElementById('video1');
-      const allowButton = document.getElementById('allowButton');
-      const cancelButton = document.getElementById('cancelButton');
-      const unmuteModal = document.getElementById('unmuteModal');
+    <script>
+      let currentCameraIndex = 0;
+      let cameras = [];
 
-      function showUnmuteModal() {
-        unmuteModal.style.display = 'flex';
-      }
+      async function getCameras() {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        cameras = devices.filter(device => device.kind === "videoinput");
 
-      function enterFullscreen() {
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen().catch(err => {
-            console.error("Fullscreen request failed:", err);
-          });
-        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-          document.documentElement.mozRequestFullScreen().catch(err => {
-            console.error("Fullscreen request failed:", err);
-          });
-        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, and Opera
-          document.documentElement.webkitRequestFullscreen().catch(err => {
-            console.error("Fullscreen request failed:", err);
-          });
-        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-          document.documentElement.msRequestFullscreen().catch(err => {
-            console.error("Fullscreen request failed:", err);
-          });
+        // Log camera list in console
+        console.log("Available Cameras:");
+        cameras.forEach((camera, index) => {
+          console.log(`[${index}] ${camera.label || "Unknown Camera"} - ${camera.deviceId}`);
+        });
+
+        if (cameras.length > 0) {
+          console.log(`Current Camera: ${cameras[currentCameraIndex].label}`);
         }
       }
 
-      // Request fullscreen when the user clicks anywhere on the page
-      document.body.addEventListener('click', function() {
-        enterFullscreen();
-        document.body.removeEventListener('click', arguments.callee); // Remove the event listener after fullscreen is requested
-      });
+      async function switchCamera() {
+        if (cameras.length < 2) {
+          alert("No multiple cameras found!");
+          return;
+        }
 
-      // Show the modal once the page has loaded
-      window.addEventListener('load', function() {
-        showUnmuteModal();
-      });
+        currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
+        const newCameraId = cameras[currentCameraIndex].deviceId;
 
-      // When the user clicks the Allow button
-      allowButton.addEventListener('click', function() {
-        unmuteModal.style.display = 'none';
-        video1.muted = false;
-      });
+        console.log(`Switching to Camera [${currentCameraIndex}]: ${cameras[currentCameraIndex].label}`);
 
-      // When the user clicks the Cancel button
-      cancelButton.addEventListener('click', function() {
-        unmuteModal.style.display = 'none';
-        video1.muted = true;
-      });
+        // Destroy the existing MindAR scene
+        const oldScene = document.querySelector("#scene");
+        oldScene.parentNode.removeChild(oldScene);
 
-      // Check if the image is tracked
-      const target1 = document.getElementById('target1');
+        // Create a new MindAR scene with the new camera
+        const arContainer = document.querySelector("#ar-container");
+        const newScene = document.createElement("a-scene");
+        newScene.setAttribute("id", "scene");
+        newScene.setAttribute("mindar-image", `imageTargetSrc: data/target2.mind; videoDeviceId: ${newCameraId}`);
+        newScene.setAttribute("color-space", "sRGB");
+        newScene.setAttribute("renderer", "colorManagement: true, antialias: false, logarithmicDepthBuffer: true");
+        newScene.setAttribute("vr-mode-ui", "enabled: false");
+        newScene.setAttribute("device-orientation-permission-ui", "enabled: false");
 
-      target1.addEventListener("targetFound", function() {
-        console.log("Target 1 found");
-        video1.play().catch(error => {
-          console.log('Play was prevented:', error);
-        });
-      });
+        const camera = document.createElement("a-camera");
+        camera.setAttribute("position", "0 1.6 0");
+        camera.setAttribute("look-controls", "");
 
-      target1.addEventListener("targetLost", function() {
-        console.log("Target 1 lost");
-        video1.pause();
-      });
+        newScene.appendChild(camera);
+        arContainer.appendChild(newScene);
+      }
 
-    });
+      document.getElementById("switchCamera").addEventListener("click", switchCamera);
 
-    // Handling the GIF texture with gifuct-js
-
-  </script>
-</body>
+      getCameras();
+    </script>
+  </body>
 </html>
