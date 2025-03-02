@@ -50,7 +50,7 @@
                 <a-gltf-model 
                     id="danceModel"
                     src="#danceModelAsset" 
-                    position="0 -0.1 0"
+                    position="0 -0.2 0"
                     scale="3.5 3.5 3.5"
                     animation-mixer
                     class="model"
@@ -74,14 +74,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             // Camera permission check
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    console.log('Camera access granted');
-                })
-                .catch(function(error) {
-                    console.error('Camera access denied', error);
-                    alert("Permission denied: Please enable camera access.");
-                });
+          
 
             const danceModel = document.getElementById('danceModel');
             const secondModel = document.getElementById('secondModel');
