@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script>
+      AFRAME.registerComponent('ar-slider', {
+        init: function () {
+          this.currentSlide = 0; // Start with first slide
+          this.slides = this.el.querySelectorAll('.slide-image');
+          this.isAnimating = false; // Track animation state
+          
+          // Drag/swipe variables
+          this.isDragging = false;
+          this.startX = 0;
+          this.currentX = 0;
+          this.dragThreshold = 0.05; // Minimum drag distance to trigger slide change
+          
+          // Add cursor component for interaction
+          this.el.setAttribute('cursor-listener', '');
+          this.el.setAttribute('raycaster', 'objects: .slide-image');
+          
+          // Bind event listeners
+          this.onMouseDown = this.onMouseDown.bind(this);
+          this.onMouseMove = this.onMouseMove.bind(this);
+          this.onMouseUp = this.onMouseUp.bind(this);
+          
+          // Touch events for mobile
+          this.onTouchStart = this.onTouchStart.bind(this);
+          this.onTouchMove = this.onTouchMove.bind(this);
+          this.onTouchEnd = this.onTouchEnd.bind(this);
+          
+          // Add event listeners to the scene canvas
+          const canvas = document.querySelector('a-scene').canvas;
+          canvas.addEventListener('mousedown', this.onMouseDown);
+          canvas.addEventListener('mousemove', this.onMouseMove);
+          canvas.addEventListener('mouseup', this.onMouseUp);
+          canvas.addEventListener('touchstart', this.onTouchStart);
+          canvas.addEventListener('touchmove', this.onTouchMove);
+          canvas.addEventListener('touchend', this.onTouchEnd);
+          
+          this.updateSlider();
+        },
+        
+        onMouseDown: function(event) {
+          this.isDragging = true;
+          this.startX = event.clientX;
+        },
+        
+        onMouseMove: function(event) {
+          if (!this.isDragging) return;
+          this.currentX = event.clientX;
+        },
+        
+        onMouseUp: function(event) {
+          if (!this.isDragging) return;
+          this.isDragging = false;
+          this.handleDragEnd();
+        },
+        
+        onTouchStart: function(event) {
+          this.isDragging = true;
+          this.startX = event.touches[0].clientX;
+        },
+        
+        onTouchMove: function(event) {
+          if (!this.isDragging) return;
+          this.currentX = event.touches[0].clientX;
+          event.preventDefault();
+        },
+        
+        onTouchEnd: function(event) {
+          if (!this.isDragging) return;
+          this.isDragging = false;
+          this.handleDragEnd();
+        },
+        
+        handleDragEnd: function() {
+          const deltaX = this.currentX - this.startX;
+          const normalizedDelta = deltaX / window.innerWidth; // Normalize to screen width
+          
+          if (Math.abs(normalizedDelta) > this.dragThreshold) {
+            if (normalizedDelta > 0) {
+              // Dragged right - go to previous slide
+              this.prevSlide();
+            } else {
+              // Dragged left - go to next slide
+              this.nextSlide();
+            }
+          }
+          
+          this.startX = 0;
+          this.currentX = 0;
+        },
+        
+        nextSlide: function() {
+          this.isAnimating = true;
+          this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+          this.updateSlider();
+          // Show shadow again after animation completes
+          setTimeout(() => {
+            this.isAnimating = false;
+            this.updateSlider();
+          }, 500);
+        },
+        
+        prevSlide: function() {
+          this.isAnimating = true;
+          this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+          this.updateSlider();
+          // Show shadow again after animation completes
+          setTimeout(() => {
+            this.isAnimating = false;
+            this.updateSlider();
+          }, 500);
+        },
+        
+        updateSlider: function() {
+          const totalSlides = this.slides.length;
+          
+          this.slides.forEach((slide, index) => {
+            // Add smooth transitions
+            slide.setAttribute('animation__position', 'property: position; dur: 500; easing: easeInOutQuad');
+            slide.setAttribute('animation__scale', 'property: scale; dur: 500; easing: easeInOutQuad');
+            slide.setAttribute('animation__rotation', 'property: rotation; dur: 500; easing: easeInOutQuad');
+            
+            // Calculate relative position with proper wrapping
+            let relativePos = index - this.currentSlide;
+            
+            // Handle wrapping for carousel effect
+            if (relativePos > totalSlides / 2) {
+              relativePos -= totalSlides;
+            } else if (relativePos < -totalSlides / 2) {
+              relativePos += totalSlides;
+            }
+            
+            if (relativePos === 0) {
+              // Active slide - center position
+              slide.setAttribute('animation__position', 'property: position; to: 0 0 0.1; dur: 500; easing: easeInOutQuad');
+              slide.setAttribute('animation__scale', 'property: scale; to: 1 1 1; dur: 500; easing: easeInOutQuad');
+              slide.setAttribute('animation__rotation', 'property: rotation; to: 0 0 0; dur: 500; easing: easeInOutQuad');
+              slide.setAttribute('material', 'opacity: 1; shader: standard');
+              slide.setAttribute('visible', true);
+            } else {
+              // Side slides
+              const absPos = Math.abs(relativePos);
+              const xPos = 0.25 * relativePos;
+              const scale = Math.max(0.6, 1 - 0.15 * absPos);
+              const opacity = Math.max(0.4, 1 - 0.3 * absPos);
+              const zPos = 0.05 - absPos * 0.02;
+              const rotation = relativePos > 0 ? -5 : 5;
+              
+              // Only show slides that are close enough
+              const isVisible = absPos <= 2;
+              
+              slide.setAttribute('animation__position', `property: position; to: ${xPos} 0 ${zPos}; dur: 500; easing: easeInOutQuad`);
+              slide.setAttribute('animation__scale', `property: scale; to: ${scale} ${scale} 1; dur: 500; easing: easeInOutQuad`);
+              slide.setAttribute('animation__rotation', `property: rotation; to: 0 ${rotation} 0; dur: 500; easing: easeInOutQuad`);
+              slide.setAttribute('material', `opacity: ${opacity}; shader: standard; roughness: 0.8`);
+              slide.setAttribute('visible', isVisible);
+            }
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene mindar-image="imageTargetSrc: data/menu.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+        <img id="slide1" src="images/burger.jpeg" />
+        <img id="slide2" src="images/pasta.jpg" />
+        <img id="slide3" src="images/pizza.jpg" />
+        <img id="slide4" src="images/ramen.jpeg" />
+        <img id="slide5" src="images/spha.jpeg" />
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-entity ar-slider>
+          <!-- Slider images without shadows -->
+          <a-entity>
+            <a-plane class="slide-image" src="#slide1" position="0 0 0.1" height="1.65" width="1.05" rotation="0 0 0" 
+                     material="opacity: 1; shader: standard" height="1.1" width="0.7"></a-plane>
+          </a-entity>
+          
+          <a-entity>
+            <a-plane class="slide-image" src="#slide2" position="0 0 0.1" height="1.65" width="1.05" rotation="0 0 0" 
+                     material="opacity: 0.6; shader: standard" height="1.1" width="0.7"></a-plane>
+          </a-entity>
+          
+          <a-entity>
+            <a-plane class="slide-image" src="#slide3" position="0 0 0.1" height="1.65" width="1.05" rotation="0 0 0" 
+                     material="opacity: 0.6; shader: standard" height="1.1" width="0.7"></a-plane>
+          </a-entity>
+          
+          <a-entity>
+            <a-plane class="slide-image" src="#slide4" position="0 0 0.1" height="1.65" width="1.05" rotation="0 0 0" 
+                     material="opacity: 0.6; shader: standard" height="1.1" width="0.7"></a-plane>
+          </a-entity>
+          
+          <a-entity>
+            <a-plane class="slide-image" src="#slide5" position="0 0 0.1" height="1.65" width="1.05" rotation="0 0 0" 
+                     material="opacity: 0.6; shader: standard" height="1.1" width="0.7"></a-plane>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
